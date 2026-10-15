@@ -30,7 +30,7 @@ Status markers:
 - [x] Implement structured JSON logging and correlation/request IDs
 - [x] Set up Docker Compose for local PostgreSQL with pgvector extension
 - [x] Configure SQLAlchemy 2.0 (async) and Alembic migration harness
-- [ ] Implement initial relational schema: Users, Sessions, Conversations, Messages, AuditEvents
+- [x] Implement initial relational schema: Users, Sessions, Conversations, Messages, AuditEvents
 - [ ] Implement Argon2id password hashing and JWT access/refresh token rotation
 - [ ] Enforce strict tenant isolation and server-side ownership checks
 - [ ] Abstract Model Provider interface (mock provider for zero-cost unit testing)
