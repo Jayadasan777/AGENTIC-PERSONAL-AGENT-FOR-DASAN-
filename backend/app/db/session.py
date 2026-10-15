@@ -42,3 +42,9 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
             raise
         finally:
             await session.close()
+
+
+# Alias used by FastAPI dependency injection in auth/deps modules
+get_async_session = get_db
+
+__all__ = ["async_session_factory", "engine", "get_async_session", "get_db"]

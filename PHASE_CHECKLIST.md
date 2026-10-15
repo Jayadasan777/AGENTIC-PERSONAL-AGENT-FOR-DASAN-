@@ -31,10 +31,10 @@ Status markers:
 - [x] Set up Docker Compose for local PostgreSQL with pgvector extension
 - [x] Configure SQLAlchemy 2.0 (async) and Alembic migration harness
 - [x] Implement initial relational schema: Users, Sessions, Conversations, Messages, AuditEvents
-- [ ] Implement Argon2id password hashing and JWT access/refresh token rotation
-- [ ] Enforce strict tenant isolation and server-side ownership checks
-- [ ] Abstract Model Provider interface (mock provider for zero-cost unit testing)
-- [ ] Write unit & integration tests covering auth, tenant isolation, and config validation
+- [x] Implement Argon2id password hashing and JWT access/refresh token rotation
+- [x] Enforce strict tenant isolation and server-side ownership checks
+- [x] Abstract Model Provider interface (mock provider for zero-cost unit testing)
+- [x] Write unit & integration tests covering auth, tenant isolation, and config validation
 
 ---
 
