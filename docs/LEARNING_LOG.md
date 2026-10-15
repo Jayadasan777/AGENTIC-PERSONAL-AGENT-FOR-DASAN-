@@ -38,3 +38,8 @@ A running three-line journal documenting lessons, trade-offs, and insights learn
 1. **Application factory:** Implemented `create_application()` with modern `lifespan` context manager, automated logging initialization, and versioned routing.
 2. **Correlation ID middleware:** Built HTTP middleware tracking `X-Request-ID` across ingress, setting task context, recording latency, and appending headers.
 3. **Defensive exception handling:** Registered global unhandled exception handler returning sanitized JSON error envelopes with zero stack-trace leakage.
+
+### [2026-10-15] Phase 1 - Step 6: Docker Compose with PostgreSQL 16 and pgvector
+1. **Unified relational & vector store:** Provisioned `pgvector/pgvector:pg16` through Docker Compose with automated initialization scripts for `vector` and `uuid-ossp`.
+2. **Network isolation:** Bound port `5432` strictly to loopback interface `127.0.0.1` to prevent public or LAN database exposure.
+3. **Live verification:** Confirmed container health checks and queried `pg_extension` directly, verifying `vector 0.8.7` active in `aura_db`.
