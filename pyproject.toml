@@ -52,11 +52,19 @@ ignore = [
     "S101", # allow assert in tests
 ]
 
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = [
+    "S101", # assert allowed in tests
+    "S105", # hardcoded dummy passwords allowed in test fixtures
+    "S106", # hardcoded dummy passwords allowed in test fixtures
+]
+
 [tool.mypy]
 python_version = "3.12"
 strict = true
 ignore_missing_imports = true
 warn_unused_configs = true
+explicit_package_bases = true
 
 [tool.pytest.ini_options]
 minversion = "8.0"

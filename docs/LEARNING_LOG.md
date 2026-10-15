@@ -23,3 +23,8 @@ A running three-line journal documenting lessons, trade-offs, and insights learn
 1. **Pydantic Settings:** Implemented strongly-typed configuration with validation for environment, server ports, and storage limits.
 2. **SecretStr defense:** Wrapped `SECRET_KEY` and `POSTGRES_PASSWORD` in `SecretStr` to prevent credentials leaking into logs, stack traces, or prints.
 3. **Cryptographic validation:** Added a custom field validator enforcing a minimum 32-character key length to prevent weak cryptographic signing.
+
+### [2026-10-15] Phase 1 - Step 3: Toolchain Verification and Test Automation
+1. **Isolated virtualenv:** Provisioned Python 3.12 `.venv` in WSL2 Ubuntu and installed all development and runtime dependencies.
+2. **Automated quality gates:** Configured Ruff (`per-file-ignores` for test fixtures) and mypy strict mode (`explicit_package_bases = true`).
+3. **Test verification:** Executed 4 automated unit tests in `tests/test_config.py` with pytest, confirming 100% pass rate with zero type or lint defects.

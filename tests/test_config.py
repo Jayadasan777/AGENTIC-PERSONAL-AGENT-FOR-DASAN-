@@ -21,7 +21,8 @@ def test_secret_str_redaction() -> None:
     # str(settings.SECRET_KEY) must show '**********', never the raw string
     assert "insecure_dev_key" not in str(settings.SECRET_KEY)
     assert "**********" in str(settings.SECRET_KEY)
-    assert settings.SECRET_KEY.get_secret_value() == "insecure_dev_key_must_be_changed_in_prod_32chars"
+    expected_key = "insecure_dev_key_must_be_changed_in_prod_32chars"
+    assert settings.SECRET_KEY.get_secret_value() == expected_key
 
 
 def test_secret_key_minimum_length_validation() -> None:

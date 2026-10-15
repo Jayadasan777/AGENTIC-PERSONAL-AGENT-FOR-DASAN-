@@ -23,7 +23,7 @@ Status markers:
 ---
 
 ## Phase 1: Backend Foundation and Application Skeleton
-- [/] Establish Python project structure with pyproject.toml & virtual environment
+- [x] Establish Python project structure with pyproject.toml & virtual environment
 - [x] Configure Ruff, mypy, and pytest in pyproject.toml
 - [ ] Build minimal FastAPI application skeleton with `/health` endpoint
 - [x] Implement typed settings and environment validation with Pydantic Settings
