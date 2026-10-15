@@ -9,7 +9,7 @@ Status markers:
 ---
 
 ## Phase 0: Repository Audit and Project Planning
-- [/] Inspect repository, branch, and remote configuration
+- [x] Inspect repository, branch, and remote configuration
 - [x] Create secure `.gitignore` and sanitized `.env.example`
 - [x] Create project `README.md` with honest capability markers
 - [x] Create project `docs/GLOSSARY.md`
@@ -17,7 +17,7 @@ Status markers:
 - [x] Document system architecture in `docs/ARCHITECTURE.md`
 - [x] Establish preliminary threat model in `docs/THREAT_MODEL.md`
 - [x] Create initial Architecture Decision Record (`ADR-0001`)
-- [ ] Safe initial base commit and push to remote
+- [x] Safe initial base commit and push to remote
 
 ---
 
