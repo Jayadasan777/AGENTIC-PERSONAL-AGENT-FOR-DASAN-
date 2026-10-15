@@ -47,8 +47,8 @@ data/
 uploads/
 backups/
 
-# Local LLM Models & Weights (Large files)
-models/
+# Local LLM Models & Weights (Large files in root directory)
+/models/
 *.gguf
 *.bin
 *.onnx
