@@ -18,3 +18,8 @@ A running three-line journal documenting lessons, trade-offs, and insights learn
 1. **WSL2 environment audit:** Discovered Ubuntu 24.04 runtime with Python 3.12.3, `python3-venv`, and Docker 29.1.3 verified operational.
 2. **Standardized packaging:** Adopted PEP 621 `pyproject.toml` consolidating dependencies, Ruff linter, mypy strict type checker, and pytest options.
 3. **Security-first tooling:** Integrated `bandit` and `flake8-bandit` rules directly into the linter configuration to catch hardcoded secrets and insecure calls early.
+
+### [2026-10-15] Phase 1 - Step 2: Typed Application Settings and Secret Masking
+1. **Pydantic Settings:** Implemented strongly-typed configuration with validation for environment, server ports, and storage limits.
+2. **SecretStr defense:** Wrapped `SECRET_KEY` and `POSTGRES_PASSWORD` in `SecretStr` to prevent credentials leaking into logs, stack traces, or prints.
+3. **Cryptographic validation:** Added a custom field validator enforcing a minimum 32-character key length to prevent weak cryptographic signing.

@@ -26,7 +26,7 @@ Status markers:
 - [/] Establish Python project structure with pyproject.toml & virtual environment
 - [x] Configure Ruff, mypy, and pytest in pyproject.toml
 - [ ] Build minimal FastAPI application skeleton with `/health` endpoint
-- [ ] Implement typed settings and environment validation with Pydantic Settings
+- [x] Implement typed settings and environment validation with Pydantic Settings
 - [ ] Implement structured JSON logging and correlation/request IDs
 - [ ] Set up Docker Compose for local PostgreSQL with pgvector extension
 - [ ] Configure SQLAlchemy 2.0 (async) and Alembic migration harness
