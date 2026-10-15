@@ -28,3 +28,8 @@ A running three-line journal documenting lessons, trade-offs, and insights learn
 1. **Isolated virtualenv:** Provisioned Python 3.12 `.venv` in WSL2 Ubuntu and installed all development and runtime dependencies.
 2. **Automated quality gates:** Configured Ruff (`per-file-ignores` for test fixtures) and mypy strict mode (`explicit_package_bases = true`).
 3. **Test verification:** Executed 4 automated unit tests in `tests/test_config.py` with pytest, confirming 100% pass rate with zero type or lint defects.
+
+### [2026-10-15] Phase 1 - Step 4: Structured JSON Logging and Correlation IDs
+1. **Machine-parseable logs:** Built `JSONFormatter` to render standard library log records as single-line JSON with timestamps and environment context.
+2. **ContextVar correlation:** Used Python's async-safe `contextvars.ContextVar` to propagate `request_id` across asynchronous coroutines without parameter drilling.
+3. **Traceability verified:** Implemented unit tests proving request IDs and exception stack traces format cleanly into JSON log objects.
