@@ -33,3 +33,8 @@ A running three-line journal documenting lessons, trade-offs, and insights learn
 1. **Machine-parseable logs:** Built `JSONFormatter` to render standard library log records as single-line JSON with timestamps and environment context.
 2. **ContextVar correlation:** Used Python's async-safe `contextvars.ContextVar` to propagate `request_id` across asynchronous coroutines without parameter drilling.
 3. **Traceability verified:** Implemented unit tests proving request IDs and exception stack traces format cleanly into JSON log objects.
+
+### [2026-10-15] Phase 1 - Step 5: FastAPI Skeleton, Middleware, and Health Endpoints
+1. **Application factory:** Implemented `create_application()` with modern `lifespan` context manager, automated logging initialization, and versioned routing.
+2. **Correlation ID middleware:** Built HTTP middleware tracking `X-Request-ID` across ingress, setting task context, recording latency, and appending headers.
+3. **Defensive exception handling:** Registered global unhandled exception handler returning sanitized JSON error envelopes with zero stack-trace leakage.

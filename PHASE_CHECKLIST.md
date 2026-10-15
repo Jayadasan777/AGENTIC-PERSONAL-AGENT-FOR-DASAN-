@@ -25,7 +25,7 @@ Status markers:
 ## Phase 1: Backend Foundation and Application Skeleton
 - [x] Establish Python project structure with pyproject.toml & virtual environment
 - [x] Configure Ruff, mypy, and pytest in pyproject.toml
-- [ ] Build minimal FastAPI application skeleton with `/health` endpoint
+- [x] Build minimal FastAPI application skeleton with `/health` endpoint
 - [x] Implement typed settings and environment validation with Pydantic Settings
 - [x] Implement structured JSON logging and correlation/request IDs
 - [ ] Set up Docker Compose for local PostgreSQL with pgvector extension
