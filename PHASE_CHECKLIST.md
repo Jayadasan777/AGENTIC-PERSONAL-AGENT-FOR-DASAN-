@@ -17,6 +17,7 @@ Status markers:
 - [x] Document system architecture in `docs/ARCHITECTURE.md`
 - [x] Establish preliminary threat model in `docs/THREAT_MODEL.md`
 - [x] Create initial Architecture Decision Record (`ADR-0001`)
+- [x] Document stack dependencies, hardware constraints, and risk register in `docs/PROJECT_DEPENDENCIES_AND_RISKS.md`
 - [x] Safe initial base commit and push to remote
 
 ---
