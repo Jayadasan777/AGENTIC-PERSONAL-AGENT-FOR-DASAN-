@@ -43,3 +43,8 @@ A running three-line journal documenting lessons, trade-offs, and insights learn
 1. **Unified relational & vector store:** Provisioned `pgvector/pgvector:pg16` through Docker Compose with automated initialization scripts for `vector` and `uuid-ossp`.
 2. **Network isolation:** Bound port `5432` strictly to loopback interface `127.0.0.1` to prevent public or LAN database exposure.
 3. **Live verification:** Confirmed container health checks and queried `pg_extension` directly, verifying `vector 0.8.7` active in `aura_db`.
+
+### [2026-10-15] Phase 1 - Step 7: SQLAlchemy 2.0 Async Session & Alembic Harness
+1. **Async database core:** Configured `create_async_engine` and `async_sessionmaker` with `pool_pre_ping=True` and FastAPI `get_db` dependency injection.
+2. **Dynamic migration harness:** Configured `alembic/env.py` to bind directly to `Base.metadata` and dynamically read `Settings().async_database_uri`.
+3. **Event loop isolation lesson:** Resolved `asyncpg` cross-loop connection pooling in pytest by using `NullPool` fixtures in `conftest.py` for test isolation.

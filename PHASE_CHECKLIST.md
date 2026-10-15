@@ -29,7 +29,7 @@ Status markers:
 - [x] Implement typed settings and environment validation with Pydantic Settings
 - [x] Implement structured JSON logging and correlation/request IDs
 - [x] Set up Docker Compose for local PostgreSQL with pgvector extension
-- [ ] Configure SQLAlchemy 2.0 (async) and Alembic migration harness
+- [x] Configure SQLAlchemy 2.0 (async) and Alembic migration harness
 - [ ] Implement initial relational schema: Users, Sessions, Conversations, Messages, AuditEvents
 - [ ] Implement Argon2id password hashing and JWT access/refresh token rotation
 - [ ] Enforce strict tenant isolation and server-side ownership checks
