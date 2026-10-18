@@ -63,15 +63,15 @@ Status markers:
 ---
 
 ## Phase 4: Agent Harness, Tools, and Approvals
-- [ ] Implement LangGraph stateful agent execution graph
-- [ ] Define Pydantic-typed tool interfaces with input schema validation
-- [ ] Build server-side Policy Engine with three-tier decisions (`ALLOW`, `REQUIRE_APPROVAL`, `DENY`)
-- [ ] Implement human-in-the-loop approval workflow with signed, expiration-bounded tokens
-- [ ] Implement independent post-execution outcome verification
-- [ ] Implement bounded retries and exponential backoff
-- [ ] Build MCP (Model Context Protocol) client with allowlisted integrations
-- [ ] Build user-managed `SKILL.md` parser and permission validator
-- [ ] Build global emergency kill switch
+- [x] Implement LangGraph stateful agent execution graph
+- [x] Define Pydantic-typed tool interfaces with input schema validation
+- [x] Build server-side Policy Engine with three-tier decisions (`ALLOW`, `REQUIRE_APPROVAL`, `DENY`)
+- [x] Implement human-in-the-loop approval workflow with signed, expiration-bounded tokens
+- [x] Implement independent post-execution outcome verification
+- [x] Implement bounded retries and exponential backoff
+- [x] Build MCP (Model Context Protocol) client with allowlisted integrations
+- [x] Build user-managed `SKILL.md` parser and permission validator
+- [x] Build global emergency kill switch
 
 ---
 
