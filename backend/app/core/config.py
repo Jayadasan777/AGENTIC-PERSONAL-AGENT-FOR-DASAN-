@@ -82,3 +82,6 @@ class Settings(BaseSettings):
 def get_settings() -> Settings:
     """Returns a cached instance of Settings to avoid re-reading files on every call."""
     return Settings()
+
+
+settings = get_settings()

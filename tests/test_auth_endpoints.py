@@ -40,9 +40,7 @@ async def test_app_and_client():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-    session_factory = async_sessionmaker(
-        bind=engine, class_=AsyncSession, expire_on_commit=False
-    )
+    session_factory = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
 
     # Override DB dependency
     async def override_get_async_session():
@@ -57,9 +55,7 @@ async def test_app_and_client():
     app = create_application()
     app.dependency_overrides[get_async_session] = override_get_async_session
 
-    async with AsyncClient(
-        transport=ASGITransport(app=app), base_url="http://test"
-    ) as client:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         yield client
 
     await engine.dispose()
@@ -163,9 +159,7 @@ class TestLogin:
         assert data["token_type"] == "bearer"
 
     @pytest.mark.asyncio
-    async def test_login_wrong_password_returns_401(
-        self, test_app_and_client: AsyncClient
-    ) -> None:
+    async def test_login_wrong_password_returns_401(self, test_app_and_client: AsyncClient) -> None:
         client = test_app_and_client
         response = await client.post(
             "/api/v1/auth/login",
@@ -174,9 +168,7 @@ class TestLogin:
         assert response.status_code == 401
 
     @pytest.mark.asyncio
-    async def test_login_unknown_email_returns_401(
-        self, test_app_and_client: AsyncClient
-    ) -> None:
+    async def test_login_unknown_email_returns_401(self, test_app_and_client: AsyncClient) -> None:
         client = test_app_and_client
         response = await client.post(
             "/api/v1/auth/login",
@@ -280,15 +272,11 @@ class TestMe:
         token_b = login_b.json()["access_token"]
 
         # A's /me should return A's email
-        me_a = await client.get(
-            "/api/v1/auth/me", headers={"Authorization": f"Bearer {token_a}"}
-        )
+        me_a = await client.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {token_a}"})
         assert me_a.json()["email"] == "useraaa@example.com"
 
         # B's /me should return B's email
-        me_b = await client.get(
-            "/api/v1/auth/me", headers={"Authorization": f"Bearer {token_b}"}
-        )
+        me_b = await client.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {token_b}"})
         assert me_b.json()["email"] == "userbbb@example.com"
 
         # Cross-check: B's email is NOT visible in A's response

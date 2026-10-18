@@ -63,6 +63,4 @@ class AuditEvent(Base):
     )
 
     # Relationships
-    user: Mapped["User | None"] = relationship(
-        "User", back_populates="audit_events"
-    )
+    user: Mapped["User | None"] = relationship("User", back_populates="audit_events")

@@ -51,6 +51,4 @@ class Message(Base, TimestampMixin):
     )
 
     # Relationships
-    conversation: Mapped["Conversation"] = relationship(
-        "Conversation", back_populates="messages"
-    )
+    conversation: Mapped["Conversation"] = relationship("Conversation", back_populates="messages")

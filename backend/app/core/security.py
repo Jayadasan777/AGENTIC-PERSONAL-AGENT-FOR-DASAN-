@@ -163,9 +163,7 @@ def decode_token(token: str) -> dict[str, Any]:
     Raises:
         JWTError: If the token is expired, tampered, or otherwise invalid.
     """
-    return dict(
-        jwt.decode(token, _get_secret(), algorithms=[ALGORITHM])
-    )
+    return dict(jwt.decode(token, _get_secret(), algorithms=[ALGORITHM]))
 
 
 def decode_access_token(token: str) -> dict[str, Any]:

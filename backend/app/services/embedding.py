@@ -74,9 +74,33 @@ class MockEmbeddingProvider(BaseEmbeddingProvider):
         cleaned = text.lower().strip()
         raw_tokens = re.findall(r"\w+", cleaned)
         stop_words = {
-            "the", "a", "an", "is", "are", "was", "were", "as", "in", "for", "over",
-            "and", "or", "to", "at", "does", "do", "did", "which", "what", "how",
-            "who", "user", "of", "by", "with", "from",
+            "the",
+            "a",
+            "an",
+            "is",
+            "are",
+            "was",
+            "were",
+            "as",
+            "in",
+            "for",
+            "over",
+            "and",
+            "or",
+            "to",
+            "at",
+            "does",
+            "do",
+            "did",
+            "which",
+            "what",
+            "how",
+            "who",
+            "user",
+            "of",
+            "by",
+            "with",
+            "from",
         }
         tokens = []
         for t in raw_tokens:

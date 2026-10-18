@@ -51,14 +51,14 @@ Status markers:
 ---
 
 ## Phase 3: Document Intelligence and RAG
-- [ ] Build secure document upload pipeline with MIME-type, size, and magic-byte checks
-- [ ] Sandbox or isolate risky file parsers (PDF, DOCX, TXT)
-- [ ] Implement recursive text chunking with citation metadata (page, section, chunk ID)
-- [ ] Generate chunk embeddings and store in pgvector
-- [ ] Build RAG context retrieval pipeline with prompt injection sanitization boundaries
-- [ ] Implement strict citation-grounded response generation
-- [ ] Build document reindexing and deletion workflows
-- [ ] Test defense against indirect prompt injections hidden in document text
+- [x] Build secure document upload pipeline with MIME-type, size, and magic-byte checks
+- [x] Sandbox or isolate risky file parsers (PDF, DOCX, TXT)
+- [x] Implement recursive text chunking with citation metadata (page, section, chunk ID)
+- [x] Generate chunk embeddings and store in pgvector
+- [x] Build RAG context retrieval pipeline with prompt injection sanitization boundaries
+- [x] Implement strict citation-grounded response generation
+- [x] Build document reindexing and deletion workflows
+- [x] Test defense against indirect prompt injections hidden in document text
 
 ---
 

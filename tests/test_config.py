@@ -42,5 +42,7 @@ def test_async_database_uri_builder() -> None:
         POSTGRES_PASSWORD="test_password_placeholder",  # type: ignore[arg-type]
         POSTGRES_DB="test_db",
     )
-    expected_uri = "postgresql+asyncpg://test_user:test_password_placeholder@db.internal:5433/test_db"
+    expected_uri = (
+        "postgresql+asyncpg://test_user:test_password_placeholder@db.internal:5433/test_db"
+    )
     assert settings.async_database_uri == expected_uri

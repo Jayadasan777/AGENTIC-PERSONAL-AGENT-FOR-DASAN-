@@ -39,9 +39,33 @@ DEDUPLICATION_THRESHOLD = 0.95
 
 
 _STOP_WORDS = {
-    "the", "a", "an", "is", "are", "was", "were", "as", "in", "for", "over",
-    "and", "or", "to", "at", "does", "do", "did", "which", "what", "how",
-    "who", "user", "of", "by", "with", "from",
+    "the",
+    "a",
+    "an",
+    "is",
+    "are",
+    "was",
+    "were",
+    "as",
+    "in",
+    "for",
+    "over",
+    "and",
+    "or",
+    "to",
+    "at",
+    "does",
+    "do",
+    "did",
+    "which",
+    "what",
+    "how",
+    "who",
+    "user",
+    "of",
+    "by",
+    "with",
+    "from",
 }
 
 

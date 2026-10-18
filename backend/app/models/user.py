@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from backend.app.models.audit_event import AuditEvent
     from backend.app.models.auth_session import AuthSession
     from backend.app.models.conversation import Conversation
+    from backend.app.models.document import Document
     from backend.app.models.memory import Memory
 
 
@@ -68,6 +69,11 @@ class User(Base, TimestampMixin):
     )
     memories: Mapped[list["Memory"]] = relationship(
         "Memory",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+    documents: Mapped[list["Document"]] = relationship(
+        "Document",
         back_populates="user",
         cascade="all, delete-orphan",
     )

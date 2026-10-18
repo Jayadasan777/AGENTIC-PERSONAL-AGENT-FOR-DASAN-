@@ -46,9 +46,7 @@ def create_application() -> FastAPI:
     # Middleware: Request ID Propagation & Latency Tracking
     # --------------------------------------------------------------------------
     @app.middleware("http")
-    async def request_id_and_logging_middleware(
-        request: Request, call_next: Any
-    ) -> Response:
+    async def request_id_and_logging_middleware(request: Request, call_next: Any) -> Response:
         incoming_id = request.headers.get("X-Request-ID")
         request_id = incoming_id if incoming_id else f"req-{uuid.uuid4().hex[:12]}"
         set_request_id(request_id)
@@ -71,9 +69,7 @@ def create_application() -> FastAPI:
     # Global Safe Exception Handler
     # --------------------------------------------------------------------------
     @app.exception_handler(Exception)
-    async def unhandled_exception_handler(
-        request: Request, exc: Exception
-    ) -> JSONResponse:
+    async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONResponse:
         logger.exception("Unhandled server exception processing %s", request.url.path)
         return JSONResponse(
             status_code=500,

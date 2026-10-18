@@ -14,6 +14,7 @@ from sqlalchemy.types import JSON, Text
 
 try:
     from pgvector.sqlalchemy import Vector as PgVector
+
     _HAS_PGVECTOR = True
 except ImportError:
     _HAS_PGVECTOR = False

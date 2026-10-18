@@ -35,9 +35,7 @@ async def app_client():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-    session_factory = async_sessionmaker(
-        bind=engine, class_=AsyncSession, expire_on_commit=False
-    )
+    session_factory = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
 
     async def override_get_async_session():
         async with session_factory() as session:
@@ -51,9 +49,7 @@ async def app_client():
     app = create_application()
     app.dependency_overrides[get_async_session] = override_get_async_session
 
-    async with AsyncClient(
-        transport=ASGITransport(app=app), base_url="http://test"
-    ) as client:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         yield client
 
     await engine.dispose()
@@ -141,9 +137,7 @@ class TestMemoryCRUD:
         )
 
         # Filter by preference
-        list_resp = await app_client.get(
-            "/api/v1/memory?category=preference", headers=headers
-        )
+        list_resp = await app_client.get("/api/v1/memory?category=preference", headers=headers)
         assert list_resp.status_code == 200
         items = list_resp.json()
         assert len(items) == 1

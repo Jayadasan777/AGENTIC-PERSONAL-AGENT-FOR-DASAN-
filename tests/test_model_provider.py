@@ -26,27 +26,21 @@ class TestMockModelProvider:
     @pytest.mark.asyncio
     async def test_returns_fixed_response(self) -> None:
         provider = MockModelProvider(fixed_response="Test answer")
-        request = CompletionRequest(
-            messages=[ChatMessage(role="user", content="Hello")]
-        )
+        request = CompletionRequest(messages=[ChatMessage(role="user", content="Hello")])
         response = await provider.complete(request)
         assert response.content == "Test answer"
 
     @pytest.mark.asyncio
     async def test_response_has_correct_type(self) -> None:
         provider = MockModelProvider()
-        request = CompletionRequest(
-            messages=[ChatMessage(role="user", content="Hello")]
-        )
+        request = CompletionRequest(messages=[ChatMessage(role="user", content="Hello")])
         response = await provider.complete(request)
         assert isinstance(response, CompletionResponse)
 
     @pytest.mark.asyncio
     async def test_call_count_increments(self) -> None:
         provider = MockModelProvider()
-        request = CompletionRequest(
-            messages=[ChatMessage(role="user", content="ping")]
-        )
+        request = CompletionRequest(messages=[ChatMessage(role="user", content="ping")])
         assert provider.call_count == 0
         await provider.complete(request)
         await provider.complete(request)
@@ -55,9 +49,7 @@ class TestMockModelProvider:
     @pytest.mark.asyncio
     async def test_model_name_is_mock(self) -> None:
         provider = MockModelProvider()
-        request = CompletionRequest(
-            messages=[ChatMessage(role="user", content="test")]
-        )
+        request = CompletionRequest(messages=[ChatMessage(role="user", content="test")])
         response = await provider.complete(request)
         assert response.model == "mock-model"
 
@@ -103,12 +95,8 @@ class TestMockModelProvider:
 class TestOllamaProviderStub:
     @pytest.mark.asyncio
     async def test_raises_not_implemented(self) -> None:
-        provider = OllamaModelProvider(
-            base_url="http://localhost:11434", model_name="llama3"
-        )
-        request = CompletionRequest(
-            messages=[ChatMessage(role="user", content="Hello")]
-        )
+        provider = OllamaModelProvider(base_url="http://localhost:11434", model_name="llama3")
+        request = CompletionRequest(messages=[ChatMessage(role="user", content="Hello")])
         with pytest.raises(NotImplementedError):
             await provider.complete(request)
 
