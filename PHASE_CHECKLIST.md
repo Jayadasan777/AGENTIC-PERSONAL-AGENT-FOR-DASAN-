@@ -39,14 +39,14 @@ Status markers:
 ---
 
 ## Phase 2: Persistent Personal Memory
-- [ ] Define memory schema with provenance, confidence, source, sensitivity, and versioning
-- [ ] Implement CRUD endpoints with tenant ownership validation
-- [ ] Implement pgvector embedding integration for semantic similarity search
-- [ ] Implement hybrid retrieval (keyword + semantic vectors)
-- [ ] Implement deduplication and conflict-resolution strategies
-- [ ] Implement memory export and GDPR-compliant cascading hard deletion
-- [ ] Write security tests for memory poisoning and cross-user memory leakage
-- [ ] Benchmark retrieval accuracy against a small synthetic evaluation set
+- [x] Define memory schema with provenance, confidence, source, sensitivity, and versioning
+- [x] Implement CRUD endpoints with tenant ownership validation
+- [x] Implement pgvector embedding integration for semantic similarity search
+- [x] Implement hybrid retrieval (keyword + semantic vectors)
+- [x] Implement deduplication and conflict-resolution strategies
+- [x] Implement memory export and GDPR-compliant cascading hard deletion
+- [x] Write security tests for memory poisoning and cross-user memory leakage
+- [x] Benchmark retrieval accuracy against a small synthetic evaluation set
 
 ---
 

@@ -50,6 +50,11 @@ class Settings(BaseSettings):
     MODEL_BASE_URL: str = "http://localhost:11434"
     MODEL_NAME: str = "qwen2.5:3b-instruct-q4_K_M"
 
+    # Embedding Configuration
+    EMBEDDING_PROVIDER: Literal["mock", "ollama"] = "mock"
+    EMBEDDING_MODEL: str = "nomic-embed-text"
+    EMBEDDING_DIM: int = 384
+
     # Storage Settings
     STORAGE_LOCAL_DIR: str = "./data/storage"
     MAX_UPLOAD_SIZE_BYTES: int = 10 * 1024 * 1024  # 10 MB

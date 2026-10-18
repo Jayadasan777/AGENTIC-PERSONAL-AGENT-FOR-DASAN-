@@ -23,6 +23,7 @@ dependencies = [
     "httpx>=0.27.2",
     "python-multipart>=0.0.12",
     "email-validator>=2.0.0",
+    "pgvector>=0.3.6",
 ]
 
 [project.optional-dependencies]
@@ -60,6 +61,7 @@ ignore = [
     "S101", # assert allowed in tests
     "S105", # hardcoded dummy passwords allowed in test fixtures
     "S106", # hardcoded dummy passwords allowed in test fixtures
+    "S107", # hardcoded dummy passwords allowed in test fixtures
 ]
 "alembic/*" = [
     "E501", # generated migration lines exceed length
