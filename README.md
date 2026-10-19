@@ -1,29 +1,32 @@
 # AURA — Adaptive Unified Reasoning Assistant
 
-> **A persistent, secure, agentic AI personal assistant built from first principles for live deployment.**
+> **A persistent, secure, agentic personal AI assistant built from first principles for live deployment.**
 
-[![Phase Status](https://img.shields.io/badge/Status-Phase%200%20In--Progress-blue.svg)](PHASE_CHECKLIST.md)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Build & Tests](https://img.shields.io/badge/Tests-Passing%20(220%2B%20tests)-brightgreen.svg)](tests/)
+[![Security Scans](https://img.shields.io/badge/Bandit-0%20Vulnerabilities-brightgreen.svg)](docs/THREAT_MODEL.md)
+[![Phase Status](https://img.shields.io/badge/Status-Phases%200--9%20Complete-brightgreen.svg)](PHASE_CHECKLIST.md)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ---
 
 ## 1. Project Vision
 
-AURA (Adaptive Unified Reasoning Assistant) is designed as a persistent, secure, agentic personal AI assistant. Rather than functioning simply as a conversational wrapper or temporary chatbot, AURA integrates:
+AURA (Adaptive Unified Reasoning Assistant) is a production-ready, fully hardened personal AI agent designed to run continuously on personal infrastructure and companion devices. Rather than functioning simply as a conversational wrapper or temporary chatbot, AURA integrates:
 
-* **Authenticated, stateful conversation management** with explicit token budgeting.
-* **Persistent personal memory** (preferences, commitments, facts) with full provenance, sensitivity tagging, and conflict resolution.
-* **Document intelligence & grounded RAG** with verified citations and parser isolation.
-* **Agentic reasoning with LangGraph**, governed by a strict **server-side custom policy engine**.
-* **Human-in-the-loop explicit approvals** for sensitive operations.
-* **Durable automation** for scheduled and long-running workflows with idempotency and retry safeguards.
-* **Production-first architecture** deployable to cloud environments using open-weight models and free/open-source tools.
+* **Authenticated, Stateful Conversation Management:** Token-budgeted conversations with rotating refresh tokens, Argon2id password hashing, and session revocation.
+* **Persistent Personal Memory:** Hierarchical memory engine with semantic vector embeddings (`pgvector`), provenance tracking, sensitivity classifications, and conflict resolution.
+* **Grounding & Document RAG:** Verified document ingestion pipeline with chunking, pgvector cosine search, citation verification, and untrusted parser isolation.
+* **Agentic Execution & Policy Engine:** Stateful LangGraph reasoning harness governed by a server-side three-tier policy engine (`READ_ONLY`, `MUTATING`, `DANGEROUS`).
+* **Companion Security & Biometrics:** Android companion app (Kotlin, Jetpack Compose, Room, WorkManager) with hardware-backed biometric approvals (`BiometricPrompt`) for sensitive operations.
+* **Cross-Device Synchronization:** Monotonic sequence cursor delta sync protocol with offline operation queue replay and Last-Write-Wins (LWW) conflict resolution.
+* **Local Voice Intelligence:** Air-gapped local speech-to-text (Whisper ONNX / VAD) and low-latency text-to-speech (Piper ONNX / synthetic fallback).
+* **Durable Automation Workflows:** Idempotent, durable scheduled cron jobs and webhooks with retry policies.
 
 ---
 
 ## 2. Core Architectural Principles
 
-1. **Security Before Autonomy:** The language model never determines its own permissions. Trusted backend code enforces all authorization, ownership, and rate limits.
+1. **Security Before Autonomy:** The LLM never determines its own privileges. A server-side policy engine inspects all tool calls and enforces human biometric approvals for dangerous actions.
 2. **Explicit Verification:** Tool executions are never assumed to have succeeded; post-execution state verification inspects real outcomes.
 3. **Defense Against Prompt Injection:** Untrusted input (documents, web content, user input) is strictly separated from privileged execution pipelines.
 4. **Transparent Provenance:** Long-term memory records state why, when, and from what interaction a fact was derived.
@@ -33,44 +36,71 @@ AURA (Adaptive Unified Reasoning Assistant) is designed as a persistent, secure,
 
 ## 3. Technology Stack
 
-| Layer | Planned Technology | Role / Purpose |
+| Layer | Technology | Role / Purpose |
 | :--- | :--- | :--- |
-| **Frontend** | Next.js, React, TypeScript, Tailwind CSS | Authenticated responsive UI, chat, approvals, memory & document dashboards |
-| **Backend API** | Python, FastAPI, Pydantic v2 | High-performance async API, schema validation, policy engine |
-| **Persistence** | PostgreSQL, pgvector, SQLAlchemy, Alembic | Relational data, relational vectors for similarity search, migration tracking |
-| **AI Orchestration** | LangGraph, Open-Weight LLMs (Ollama / llama.cpp) | State graph orchestration, tool routing, structured outputs |
-| **Durable Jobs** | DBOS | Durable workflow execution, idempotency, restart recovery |
-| **Security & Auth** | Argon2id, JWT with rotating refresh tokens | Secure password hashing, credential rotation, session revocation |
-| **Tooling & Quality** | pytest, Ruff, mypy, Docker Compose | Linting, static typing, unit & security regression testing |
+| **Backend Framework** | Python 3.12, FastAPI, Pydantic v2 | High-performance async REST API, OpenAPI generation |
+| **Relational & Vector DB** | PostgreSQL 16 + pgvector, SQLAlchemy 2.0 | Unified relational data and vector similarity search |
+| **Agent Orchestration** | LangGraph, Open-Weight LLMs (Ollama / Llama.cpp) | Stateful graph execution, tool routing, structured outputs |
+| **Mobile Companion** | Android (Kotlin, Jetpack Compose, Room, WorkManager) | Push notifications, biometric approvals, offline cache |
+| **Voice Intelligence** | Whisper.cpp / Faster-Whisper, Piper TTS | Local STT & TTS with sub-100ms latency |
+| **Security & Auth** | Argon2id, JWT, Bandit, OWASP Hardening | Cryptographic hashing, token lifecycle, attack resilience |
+| **Quality & CI** | pytest, pytest-asyncio, Ruff | Strict typing, linting, and 220+ automated tests |
 
 ---
 
-## 4. Current Implementation Status
-
-See [PHASE_CHECKLIST.md](PHASE_CHECKLIST.md) for full phase-by-phase criteria and tracking.
-
-* **Phase 0 (Repository Audit & Project Planning):** In Progress
-  * Git repository initialized: Yes
-  * Directory structure & governance: Defined
-  * Architecture & Threat Model: Documented
-* **Phase 1 (Backend Foundation & Application Skeleton):** Planned
-* **Phases 2–9:** Planned
-
----
-
-## 5. Repository Structure
+## 4. Repository Structure
 
 ```text
 .
-├── .env.example              # Configuration template (no secrets)
-├── .gitignore                # Git ignore rules
-├── README.md                 # Project overview and status
-├── PHASE_CHECKLIST.md        # Comprehensive phase tracking
-├── docs/                     # Technical documentation
-│   ├── ARCHITECTURE.md       # Architectural diagrams and request flows
-│   ├── THREAT_MODEL.md       # Threat analysis and required mitigations
-│   ├── GLOSSARY.md           # Domain terms explained in plain English
-│   ├── LEARNING_LOG.md       # Incremental engineering log
-│   └── decisions/            # Architecture Decision Records (ADRs)
-└── backend/                  # (Planned in Phase 1) FastAPI application
+├── backend/
+│   ├── app/
+│   │   ├── agent/            # LangGraph harness, tools, policy engine, kill switch
+│   │   ├── api/v1/           # REST API endpoints (auth, devices, sync, voice, memories...)
+│   │   ├── core/             # Settings, security primitives, logging
+│   │   ├── db/               # PostgreSQL & SQLite session factories, migrations
+│   │   ├── models/           # SQLAlchemy ORM entities
+│   │   ├── sync/             # Monotonic delta sync protocol & offline queue
+│   │   └── voice/            # Local STT (Whisper) & TTS (Piper)
+├── android/                  # Android Kotlin Companion Application
+│   ├── app/src/main/java/com/aura/companion/
+│   │   ├── data/             # Room persistence (AuraDatabase, ApprovalDao)
+│   │   ├── sync/             # WorkManager background sync worker
+│   │   ├── security/         # Biometric authentication manager
+│   │   └── ui/               # Jetpack Compose UI & MainActivity
+├── docs/                     # Technical documentation & ADRs
+│   ├── ARCHITECTURE.md       # Architecture diagrams and design contracts
+│   ├── THREAT_MODEL.md       # Comprehensive STRIDE threat model & mitigations
+│   ├── OPERATIONAL_RUNBOOK.md# Incident response, kill switch, recovery runbooks
+│   └── INTERVIEW_ARCHITECTURAL_DECISIONS.md # Trade-offs & technical justifications
+├── tests/                    # 220+ Automated test cases covering Phases 0–9
+│   ├── test_security_attacks.py # 52 automated adversarial attack tests
+│   ├── test_sync_voice.py    # Cross-device sync & voice intelligence tests
+│   ├── test_devices.py       # Android companion & biometric approval tests
+│   └── ...                   # Unit, integration, RAG, agent, and automation tests
+└── PHASE_CHECKLIST.md        # Complete implementation checklist
 ```
+
+---
+
+## 5. Quickstart & Verification
+
+### Running Test Suite
+```bash
+# Activate virtual environment
+source .venv/bin/activate
+
+# Run all test suites
+pytest -v
+
+# Run the 52-test automated security attack suite
+pytest tests/test_security_attacks.py -v
+
+# Run Bandit security vulnerability scan
+bandit -r backend/ -ll
+```
+
+### Starting the Backend
+```bash
+uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+Interactive OpenAPI documentation is available at `http://localhost:8000/docs`.

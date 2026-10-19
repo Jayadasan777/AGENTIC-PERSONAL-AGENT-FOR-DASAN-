@@ -1,0 +1,124 @@
+# ==============================================================================
+# AURA AGENTIC SYSTEM: Production Docker Compose Stack
+# Multi-container orchestration: pgvector DB + API Backend + Caddy TLS Reverse Proxy
+# ==============================================================================
+
+services:
+  # ----------------------------------------------------------------------------
+  # PostgreSQL 16 with pgvector extension
+  # ----------------------------------------------------------------------------
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: aura-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-aura_db}
+      POSTGRES_USER: ${POSTGRES_USER:-aura_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Database password must be set in .env}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-pgvector.sql:/docker-entrypoint-initdb.d/init-pgvector.sql:ro
+      - db_backups:/var/backups/postgres
+    networks:
+      - aura-internal
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 4G
+        reservations:
+          memory: 1G
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-aura_user} -d ${POSTGRES_DB:-aura_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ----------------------------------------------------------------------------
+  # AURA API Backend (FastAPI + LangGraph + DBOS durable workflows)
+  # ----------------------------------------------------------------------------
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: aura-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-aura_user}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-aura_db}
+    volumes:
+      - aura_app_data:/app/data
+      - aura_app_logs:/app/logs
+    networks:
+      - aura-internal
+      - aura-public
+    deploy:
+      resources:
+        limits:
+          cpus: "4.0"
+          memory: 6G
+        reservations:
+          memory: 1G
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  # ----------------------------------------------------------------------------
+  # Caddy Reverse Proxy with Automatic HTTPS (Let's Encrypt)
+  # ----------------------------------------------------------------------------
+  proxy:
+    image: caddy:2-alpine
+    container_name: aura-caddy
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN:-localhost}
+      ACME_EMAIL: ${ACME_EMAIL:-admin@example.com}
+    volumes:
+      - ./deploy/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - aura-public
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+
+networks:
+  aura-internal:
+    internal: true
+    name: aura-internal
+  aura-public:
+    name: aura-public
+
+volumes:
+  postgres_data:
+    name: aura_postgres_data
+  db_backups:
+    name: aura_db_backups
+  aura_app_data:
+    name: aura_app_data
+  aura_app_logs:
+    name: aura_app_logs
+  caddy_data:
+    name: aura_caddy_data
+  caddy_config:
+    name: aura_caddy_config

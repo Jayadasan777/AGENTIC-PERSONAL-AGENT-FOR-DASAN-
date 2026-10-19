@@ -1,0 +1,55 @@
+# ==============================================================================
+# AURA AGENTIC SYSTEM: Production Caddy Reverse Proxy Configuration
+# Automatic HTTPS via Let's Encrypt / ZeroSSL, hardened TLS & security headers
+# ==============================================================================
+
+{
+    email {$ACME_EMAIL:admin@example.com}
+    admin off
+    log {
+        output stdout
+        format json
+        level INFO
+    }
+}
+
+# Match domain from environment variable, fallback to localhost for development
+{$DOMAIN:localhost} {
+    # Encode responses using modern compression algorithms
+    encode zstd gzip
+
+    # Request body limit for document uploads (50MB)
+    request_body {
+        max_size 50MB
+    }
+
+    # Hardened Security Headers
+    header {
+        Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        X-XSS-Protection "1; mode=block"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' wss: https:; frame-ancestors 'none';"
+        Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+        -Server
+    }
+
+    # Route all traffic to FastAPI backend upstream with WebSockets and proxy headers
+    reverse_proxy aura-api:8000 {
+        header_up Host {host}
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+
+        # Healthcheck for upstream backend
+        health_uri /api/v1/health
+        health_interval 10s
+        health_timeout 3s
+    }
+
+    # Custom error handling
+    handle_errors {
+        respond "{err.status_code} {err.status_text}" {err.status_code}
+    }
+}

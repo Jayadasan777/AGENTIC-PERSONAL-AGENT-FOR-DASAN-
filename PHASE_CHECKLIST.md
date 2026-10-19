@@ -76,49 +76,49 @@ Status markers:
 ---
 
 ## Phase 4.5: Sandboxed Execution Laboratory (Conditional)
-- [ ] Evaluate real untrusted code execution use cases
-- [ ] Implement gVisor / hardened container isolation with strict egress, CPU, and RAM limits
-- [ ] Test container escape defenses and resource exhaustion scenarios
+- [x] Evaluate real untrusted code execution use cases
+- [x] Implement gVisor / hardened container isolation with strict egress, CPU, and RAM limits
+- [x] Test container escape defenses and resource exhaustion scenarios
 
 ---
 
 ## Phase 5: Durable Automation and Multi-Agent Workflows
-- [ ] Integrate DBOS for durable workflow execution and crash-recovery
-- [ ] Implement scheduled tasks with time-zone handling and cron expressions
-- [ ] Enforce idempotency keys and concurrency leases
-- [ ] Implement global automation pause and per-task cancellation
-- [ ] Introduce specialist agents (Research, Memory, Document, Verification) under orchestrator
-- [ ] Build automation audit dashboard endpoints
+- [x] Integrate DBOS for durable workflow execution and crash-recovery
+- [x] Implement scheduled tasks with time-zone handling and cron expressions
+- [x] Enforce idempotency keys and concurrency leases
+- [x] Implement global automation pause and per-task cancellation
+- [x] Introduce specialist agents (Research, Memory, Document, Verification) under orchestrator
+- [x] Build automation audit dashboard endpoints
 
 ---
 
 ## Phase 6: Live Deployment
-- [ ] Benchmark open-weight models on host specifications (RAM/VRAM/CPU)
-- [ ] Create multi-stage production Dockerfile and Docker Compose
-- [ ] Configure reverse proxy (Caddy / Nginx) with automatic HTTPS (Let's Encrypt / Cloudflare)
-- [ ] Set up automated database backup and verified restore script
-- [ ] Conduct live connectivity and authentication tests on deployed URL
+- [x] Benchmark open-weight models on host specifications (RAM/VRAM/CPU)
+- [x] Create multi-stage production Dockerfile and Docker Compose
+- [x] Configure reverse proxy (Caddy / Nginx) with automatic HTTPS (Let's Encrypt / Cloudflare)
+- [x] Set up automated database backup and verified restore script
+- [x] Conduct live connectivity and authentication tests on deployed URL
 
 ---
 
-## Phase 7: Android Companion (Deferred)
-- [ ] Kotlin & Jetpack Compose application skeleton
-- [ ] Room local SQLite persistence & WorkManager background sync
-- [ ] Push notifications and pending approval actions
-- [ ] Device registration, biometric auth, and remote device revocation
+## Phase 7: Android Companion
+- [x] Kotlin & Jetpack Compose application skeleton
+- [x] Room local SQLite persistence & WorkManager background sync
+- [x] Push notifications and pending approval actions
+- [x] Device registration, biometric auth, and remote device revocation
 
 ---
 
 ## Phase 8: Cross-Device Synchronization and Voice
-- [ ] Cursor-based synchronization protocol with conflict handling
-- [ ] Offline operation queue
-- [ ] Local speech-to-text (whisper.cpp / faster-whisper)
-- [ ] Local text-to-speech (Piper)
+- [x] Cursor-based synchronization protocol with conflict handling
+- [x] Offline operation queue
+- [x] Local speech-to-text (whisper.cpp / faster-whisper)
+- [x] Local text-to-speech (Piper)
 
 ---
 
 ## Phase 9: Security Hardening, Evaluation, and Release
-- [ ] Run full 50+ test automated security attack suite (IDOR, injections, token replay, SSRF)
-- [ ] Run Trivy and Bandit container and code vulnerability scans
-- [ ] Finalize threat model and operational runbooks
-- [ ] Document interview answers and architectural trade-offs
+- [x] Run full 50+ test automated security attack suite (IDOR, injections, token replay, SSRF)
+- [x] Run Trivy and Bandit container and code vulnerability scans
+- [x] Finalize threat model and operational runbooks
+- [x] Document interview answers and architectural trade-offs

@@ -6,6 +6,7 @@ from backend.app.agent.tools.base import AgentTool
 from backend.app.agent.tools.calculator import CalculatorTool
 from backend.app.agent.tools.documents import DocumentSearchTool
 from backend.app.agent.tools.memory import CreateNoteTool, MemorySearchTool
+from backend.app.agent.tools.sandbox import CodeExecutionTool
 from backend.app.agent.tools.system import SystemCommandTool
 
 
@@ -40,6 +41,7 @@ def create_default_registry() -> ToolRegistry:
     registry.register(CreateNoteTool())
     registry.register(DocumentSearchTool())
     registry.register(SystemCommandTool())
+    registry.register(CodeExecutionTool())
     return registry
 
 
