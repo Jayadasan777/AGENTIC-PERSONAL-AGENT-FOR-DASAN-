@@ -1,0 +1,74 @@
+/* ============================================================
+   AURA Design System — Pixel-Accurate Reference Matching
+   Matching Vega.AI, Zyricon, AetherOps, and AI Internal Knowledge
+   ============================================================ */
+
+@import "tailwindcss";
+
+:root {
+  --aura-bg-base: #06050a;
+  --aura-bg-surface: #0e0c15;
+  --aura-bg-card: #13111e;
+  --aura-bg-elevated: #1a1728;
+  --aura-border: rgba(255, 255, 255, 0.08);
+  --aura-border-purple: rgba(168, 85, 247, 0.25);
+  --aura-accent: #7c3aed;
+  --aura-accent-hover: #9333ea;
+  --aura-blue: #3b82f6;
+  --aura-cyan: #06b6d4;
+  --aura-text-primary: #f8fafc;
+  --aura-text-secondary: #94a3b8;
+  --aura-text-muted: #64748b;
+}
+
+/* Vertical stripe background as seen in Zyricon reference */
+.bg-striped-purple {
+  background-color: #120919;
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(28, 14, 38, 0.8) 0px,
+    rgba(28, 14, 38, 0.8) 60px,
+    rgba(40, 18, 54, 0.95) 60px,
+    rgba(40, 18, 54, 0.95) 120px
+  );
+}
+
+/* Subtle glow orb styling */
+.orb-glow {
+  background: radial-gradient(circle at 35% 35%, #f472b6 0%, #a855f7 35%, #3b82f6 70%, #1e1b4b 100%);
+  box-shadow: 0 0 50px rgba(168, 85, 247, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.6);
+}
+
+/* Glassmorphic card styling */
+.glass-panel {
+  background: rgba(14, 12, 21, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Glowing outline button */
+.btn-glow-purple {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.35);
+}
+
+.btn-glow-blue {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.35);
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}

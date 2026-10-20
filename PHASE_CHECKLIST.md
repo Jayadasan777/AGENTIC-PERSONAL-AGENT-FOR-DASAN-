@@ -97,7 +97,20 @@ Status markers:
 - [x] Create multi-stage production Dockerfile and Docker Compose
 - [x] Configure reverse proxy (Caddy / Nginx) with automatic HTTPS (Let's Encrypt / Cloudflare)
 - [x] Set up automated database backup and verified restore script
-- [x] Conduct live connectivity and authentication tests on deployed URL
+## Phase 6.5: Next.js Web Frontend & Design System
+- [x] Initialized Next.js 16 (App Router) + TypeScript + Tailwind CSS design system
+- [x] Built AURA glassmorphic dark-first UI component primitives (Button, Input, Textarea, Badge)
+- [x] Integrated TanStack React Query + typed API client matching backend Pydantic schemas
+- [x] Built responsive AppShell with collapsible sidebar and dynamic status header
+- [x] Implemented `/login` and registration with token rotation & demo credentials autofill
+- [x] Implemented `/chat` AI interface with reasoning trace viewer, HITL approval inline gates, and RAG search
+- [x] Implemented `/memory` vault with semantic search, category chips, confidence slider, and export
+- [x] Implemented `/documents` RAG portal with file upload, chunk telemetry, and retrieval sandbox
+- [x] Implemented `/automation` dashboard with master engine pause switch, cron schedule cards, and task history
+- [x] Implemented `/approvals` governance portal with emergency kill switch toggle and risk tier guardrails
+- [x] Implemented `/activity` tamper-evident audit trail with JSON payload inspector
+- [x] Implemented `/settings` telemetry page with backend health, db readiness, and tool manifest registry
+- [x] Verified full production bundle build with zero TypeScript errors & live dev server active
 
 ---
 

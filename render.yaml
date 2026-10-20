@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: aura-backend
+    runtime: python
+    plan: free
+    region: oregon
+    buildCommand: pip install -r requirements.txt
+    startCommand: alembic upgrade head && uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: ENVIRONMENT
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: MODEL_PROVIDER
+        value: mock
+      - key: EMBEDDING_PROVIDER
+        value: mock
+      - key: DATABASE_URL
+        sync: false
+      - key: CORS_ORIGINS
+        value: "*"

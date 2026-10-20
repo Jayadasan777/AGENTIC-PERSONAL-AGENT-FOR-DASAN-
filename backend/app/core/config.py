@@ -36,6 +36,7 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
     # Database Configuration (PostgreSQL + pgvector)
+    DATABASE_URL: str | None = None
     POSTGRES_SERVER: str = "localhost"
     POSTGRES_PORT: int = 5432
     POSTGRES_USER: str = "aura_user"
@@ -44,6 +45,12 @@ class Settings(BaseSettings):
         description="Database user password",
     )
     POSTGRES_DB: str = "aura_db"
+
+    # CORS Configuration
+    CORS_ORIGINS: list[str] | str = Field(
+        default=["http://localhost:3000", "http://127.0.0.1:3000"],
+        description="Allowed CORS origins list or comma-separated string",
+    )
 
     # Model Provider Configuration
     MODEL_PROVIDER: Literal["mock", "ollama", "llamacpp"] = "mock"
@@ -60,8 +67,29 @@ class Settings(BaseSettings):
     MAX_UPLOAD_SIZE_BYTES: int = 10 * 1024 * 1024  # 10 MB
 
     @property
+    def cors_origins_list(self) -> list[str]:
+        """Returns parsed list of CORS origins."""
+        if isinstance(self.CORS_ORIGINS, list):
+            return self.CORS_ORIGINS
+        if isinstance(self.CORS_ORIGINS, str):
+            return [origin.strip() for origin in self.CORS_ORIGINS.split(",") if origin.strip()]
+        return ["http://localhost:3000", "http://127.0.0.1:3000"]
+
+    @property
     def async_database_uri(self) -> str:
-        """Constructs an asyncpg PostgreSQL connection string."""
+        """Constructs or formats an asyncpg PostgreSQL connection string."""
+        if self.DATABASE_URL:
+            raw = self.DATABASE_URL.strip()
+            # Standardize protocol for asyncpg
+            if raw.startswith("postgres://"):
+                raw = "postgresql+asyncpg://" + raw[len("postgres://"):]
+            elif raw.startswith("postgresql://") and not raw.startswith("postgresql+asyncpg://"):
+                raw = "postgresql+asyncpg://" + raw[len("postgresql://"):]
+            # Clean up sslmode for asyncpg
+            if "sslmode=require" in raw:
+                raw = raw.replace("sslmode=require", "ssl=require")
+            return raw
+
         password = self.POSTGRES_PASSWORD.get_secret_value()
         return (
             f"postgresql+asyncpg://{self.POSTGRES_USER}:{password}@"

@@ -8,6 +8,7 @@ from contextlib import asynccontextmanager
 from typing import Any
 
 from fastapi import FastAPI, Request, Response
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from backend.app import __version__
@@ -40,6 +41,18 @@ def create_application() -> FastAPI:
         redoc_url="/redoc" if settings.ENVIRONMENT != "production" else None,
         openapi_url="/openapi.json" if settings.ENVIRONMENT != "production" else None,
         lifespan=lifespan,
+    )
+
+    # --------------------------------------------------------------------------
+    # CORS Middleware — Allow frontend origins
+    # --------------------------------------------------------------------------
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.cors_origins_list,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+        expose_headers=["X-Request-ID"],
     )
 
     # --------------------------------------------------------------------------
