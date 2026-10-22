@@ -8,7 +8,8 @@ from sqlalchemy import text
 from backend.app.core.config import get_settings
 from backend.app.db.session import engine
 from backend.app.db.base import Base
-import backend.app.models  # load all models
+import backend.app.models  # load core models
+import backend.app.automation.models  # load automation tables
 
 async def init_tables():
     settings = get_settings()

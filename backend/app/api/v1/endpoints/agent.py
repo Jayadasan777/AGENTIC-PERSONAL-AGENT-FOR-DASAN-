@@ -22,10 +22,10 @@ from backend.app.api.v1.schemas.agent import (
     ToolInfoResponse,
 )
 from backend.app.db.session import get_async_session
+from backend.app.models.provider import BaseModelProvider, get_model_provider
 from backend.app.models.user import User
 
 router = APIRouter(prefix="/agent", tags=["agent"])
-_harness = AgentHarness()
 _tool_registry = get_tool_registry()
 
 
@@ -38,9 +38,11 @@ async def run_agent(
     body: AgentRunRequest,
     current_user: Annotated[User, Depends(get_current_active_user)],
     session: Annotated[AsyncSession, Depends(get_async_session)],
+    model_provider: Annotated[BaseModelProvider, Depends(get_model_provider)],
 ) -> AgentRunResponse:
     """Run autonomous agent loop, enforcing policy gating and outcome verification."""
-    output = await _harness.run(
+    harness = AgentHarness(model_provider=model_provider)
+    output = await harness.run(
         session=session,
         user_id=current_user.id,
         user_prompt=body.prompt,

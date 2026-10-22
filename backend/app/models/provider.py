@@ -159,6 +159,78 @@ class OllamaModelProvider(BaseModelProvider):
 
 
 # ---------------------------------------------------------------------------
+# Gemini Provider (Google AI Studio / Vertex)
+# ---------------------------------------------------------------------------
+
+
+class GeminiModelProvider(BaseModelProvider):
+    """Google Gemini completion provider using v1beta REST API."""
+
+    def __init__(self, api_key: str, model_name: str = "gemini-2.5-flash") -> None:
+        self._api_key = api_key
+        self._model_name = model_name.replace("models/", "")
+        logger.info("GeminiModelProvider initialized with model=%s", self._model_name)
+
+    async def complete(self, request: CompletionRequest) -> CompletionResponse:
+        import httpx
+
+        contents = []
+        system_instruction = None
+
+        for msg in request.messages:
+            if msg.role == "system":
+                system_instruction = {"parts": [{"text": msg.content}]}
+            else:
+                role = "user" if msg.role == "user" else "model"
+                contents.append({"role": role, "parts": [{"text": msg.content}]})
+
+        if not contents:
+            contents.append({"role": "user", "parts": [{"text": "Hello"}]})
+
+        payload: dict[str, Any] = {
+            "contents": contents,
+            "generationConfig": {
+                "temperature": request.temperature,
+                "maxOutputTokens": request.max_tokens,
+            },
+        }
+        if system_instruction:
+            payload["systemInstruction"] = system_instruction
+
+        model = (request.model or self._model_name).replace("models/", "")
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={self._api_key}"
+
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            try:
+                res = await client.post(url, json=payload)
+                res.raise_for_status()
+                data = res.json()
+                candidates = data.get("candidates", [])
+                if not candidates:
+                    raise ModelProviderError(f"No candidates returned from Gemini: {data}")
+
+                parts = candidates[0].get("content", {}).get("parts", [])
+                text_content = "".join(p.get("text", "") for p in parts)
+                usage = data.get("usageMetadata", {})
+                prompt_tokens = usage.get("promptTokenCount", 0)
+                completion_tokens = usage.get("candidatesTokenCount", 0)
+
+                return CompletionResponse(
+                    content=text_content,
+                    model=model,
+                    prompt_tokens=prompt_tokens,
+                    completion_tokens=completion_tokens,
+                    finish_reason=candidates[0].get("finishReason", "stop"),
+                )
+            except Exception as e:
+                logger.error("Gemini API call failed: %s", e)
+                raise ModelProviderError(f"Gemini API failure: {e}") from e
+
+    async def health_check(self) -> bool:
+        return bool(self._api_key)
+
+
+# ---------------------------------------------------------------------------
 # Provider factory — FastAPI dependency
 # ---------------------------------------------------------------------------
 
@@ -174,6 +246,14 @@ def get_model_provider() -> BaseModelProvider:
     settings = get_settings()
     if settings.MODEL_PROVIDER == "mock":
         return MockModelProvider()
+    if settings.MODEL_PROVIDER == "gemini":
+        api_key = settings.GEMINI_API_KEY.get_secret_value() if settings.GEMINI_API_KEY else ""
+        if not api_key:
+            raise ValueError("GEMINI_API_KEY must be configured when MODEL_PROVIDER='gemini'")
+        return GeminiModelProvider(
+            api_key=api_key,
+            model_name=settings.MODEL_NAME or "gemini-2.5-flash",
+        )
     if settings.MODEL_PROVIDER == "ollama":
         return OllamaModelProvider(
             base_url=settings.MODEL_BASE_URL,
@@ -187,6 +267,7 @@ __all__ = [
     "ChatMessage",
     "CompletionRequest",
     "CompletionResponse",
+    "GeminiModelProvider",
     "MockModelProvider",
     "ModelProviderError",
     "OllamaModelProvider",

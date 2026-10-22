@@ -53,9 +53,10 @@ class Settings(BaseSettings):
     )
 
     # Model Provider Configuration
-    MODEL_PROVIDER: Literal["mock", "ollama", "llamacpp"] = "mock"
+    MODEL_PROVIDER: Literal["mock", "ollama", "gemini", "llamacpp"] = "gemini"
+    GEMINI_API_KEY: SecretStr | None = None
     MODEL_BASE_URL: str = "http://localhost:11434"
-    MODEL_NAME: str = "qwen2.5:3b-instruct-q4_K_M"
+    MODEL_NAME: str = "gemini-2.5-flash"
 
     # Embedding Configuration
     EMBEDDING_PROVIDER: Literal["mock", "ollama"] = "mock"
