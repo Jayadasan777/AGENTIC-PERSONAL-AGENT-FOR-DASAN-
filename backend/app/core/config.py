@@ -56,7 +56,7 @@ class Settings(BaseSettings):
     MODEL_PROVIDER: Literal["mock", "ollama", "gemini", "llamacpp"] = "gemini"
     GEMINI_API_KEY: SecretStr | None = None
     MODEL_BASE_URL: str = "http://localhost:11434"
-    MODEL_NAME: str = "gemini-2.5-flash"
+    MODEL_NAME: str = "gemini-3-flash-preview"
 
     # Embedding Configuration
     EMBEDDING_PROVIDER: Literal["mock", "ollama"] = "mock"

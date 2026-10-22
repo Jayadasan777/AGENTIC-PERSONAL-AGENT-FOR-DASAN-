@@ -17,6 +17,7 @@ Adding a new provider:
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
@@ -166,7 +167,7 @@ class OllamaModelProvider(BaseModelProvider):
 class GeminiModelProvider(BaseModelProvider):
     """Google Gemini completion provider using v1beta REST API."""
 
-    def __init__(self, api_key: str, model_name: str = "gemini-2.5-flash") -> None:
+    def __init__(self, api_key: str, model_name: str = "gemini-3-flash-preview") -> None:
         self._api_key = api_key
         self._model_name = model_name.replace("models/", "")
         logger.info("GeminiModelProvider initialized with model=%s", self._model_name)
@@ -200,31 +201,45 @@ class GeminiModelProvider(BaseModelProvider):
         model = (request.model or self._model_name).replace("models/", "")
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={self._api_key}"
 
-        async with httpx.AsyncClient(timeout=30.0) as client:
-            try:
-                res = await client.post(url, json=payload)
-                res.raise_for_status()
-                data = res.json()
-                candidates = data.get("candidates", [])
-                if not candidates:
-                    raise ModelProviderError(f"No candidates returned from Gemini: {data}")
+        async with httpx.AsyncClient(timeout=35.0) as client:
+            for attempt in range(3):
+                try:
+                    res = await client.post(url, json=payload)
+                    if res.status_code == 429 and attempt < 2:
+                        wait_sec = 2.0 * (attempt + 1)
+                        logger.warning("Gemini 429 rate limit hit, backing off %.1fs (attempt %d)", wait_sec, attempt + 1)
+                        await asyncio.sleep(wait_sec)
+                        continue
+                    res.raise_for_status()
+                    data = res.json()
+                    candidates = data.get("candidates", [])
+                    if not candidates:
+                        raise ModelProviderError(f"No candidates returned from Gemini: {data}")
 
-                parts = candidates[0].get("content", {}).get("parts", [])
-                text_content = "".join(p.get("text", "") for p in parts)
-                usage = data.get("usageMetadata", {})
-                prompt_tokens = usage.get("promptTokenCount", 0)
-                completion_tokens = usage.get("candidatesTokenCount", 0)
+                    parts = candidates[0].get("content", {}).get("parts", [])
+                    text_content = "".join(p.get("text", "") for p in parts)
+                    usage = data.get("usageMetadata", {})
+                    prompt_tokens = usage.get("promptTokenCount", 0)
+                    completion_tokens = usage.get("candidatesTokenCount", 0)
 
-                return CompletionResponse(
-                    content=text_content,
-                    model=model,
-                    prompt_tokens=prompt_tokens,
-                    completion_tokens=completion_tokens,
-                    finish_reason=candidates[0].get("finishReason", "stop"),
-                )
-            except Exception as e:
-                logger.error("Gemini API call failed: %s", e)
-                raise ModelProviderError(f"Gemini API failure: {e}") from e
+                    return CompletionResponse(
+                        content=text_content,
+                        model=model,
+                        prompt_tokens=prompt_tokens,
+                        completion_tokens=completion_tokens,
+                        finish_reason=candidates[0].get("finishReason", "stop"),
+                    )
+                except httpx.HTTPStatusError as e:
+                    if e.response.status_code == 429 and attempt < 2:
+                        await asyncio.sleep(2.5 * (attempt + 1))
+                        continue
+                    logger.error("Gemini HTTP error (attempt %d): %s", attempt + 1, e)
+                    if attempt == 2:
+                        raise ModelProviderError(f"Gemini API rate limit exceeded: {e}") from e
+                except Exception as e:
+                    logger.error("Gemini API call failed: %s", e)
+                    raise ModelProviderError(f"Gemini API failure: {e}") from e
+            raise ModelProviderError("Gemini API calls failed after retries.")
 
     async def health_check(self) -> bool:
         return bool(self._api_key)
@@ -252,7 +267,7 @@ def get_model_provider() -> BaseModelProvider:
             raise ValueError("GEMINI_API_KEY must be configured when MODEL_PROVIDER='gemini'")
         return GeminiModelProvider(
             api_key=api_key,
-            model_name=settings.MODEL_NAME or "gemini-2.5-flash",
+            model_name=settings.MODEL_NAME or "gemini-3-flash-preview",
         )
     if settings.MODEL_PROVIDER == "ollama":
         return OllamaModelProvider(

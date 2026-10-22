@@ -50,12 +50,20 @@ export default function ChatPage() {
 
     try {
       const res = await agentApi.run(textToSend);
+      const content =
+        res.final_answer ??
+        (res.pending_approval
+          ? `🛡️ Human Approval Required: AURA proposed executing '${res.pending_approval.tool_name}'. Please review and approve below.`
+          : res.error
+          ? `⚠️ Error: ${res.error}`
+          : "Task completed successfully.");
+
       setMessages((prev) => [
         ...prev,
         {
           id: `ast_${Date.now()}`,
           role: "assistant",
-          content: res.final_answer ?? (res.error ? `⚠️ Error: ${res.error}` : "Task completed successfully."),
+          content,
           timestamp: new Date().toISOString(),
           traces: res.traces,
           pendingApproval: res.pending_approval,
@@ -71,6 +79,59 @@ export default function ChatPage() {
           timestamp: new Date().toISOString(),
         },
       ]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDecision = async (
+    approvalId: string,
+    approved: boolean,
+    toolName?: string,
+    toolArgs?: Record<string, unknown>
+  ) => {
+    setIsLoading(true);
+    // Remove the pending action buttons immediately so user can see it's processing
+    setMessages((prev) =>
+      prev.map((msg) =>
+        msg.pendingApproval?.approval_id === approvalId
+          ? { ...msg, pendingApproval: undefined }
+          : msg
+      )
+    );
+
+    try {
+      const decisionRes = await agentApi.decide(approvalId, approved);
+      if (approved && decisionRes.approval_token) {
+        const safeArgs = toolArgs && Object.keys(toolArgs).length > 0 ? toolArgs : {};
+        const res = await agentApi.run("Proceed with authorized action", {
+          approval_token: decisionRes.approval_token,
+          approved_tool: toolName,
+          approved_args: safeArgs,
+        });
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: `ast_${Date.now()}`,
+            role: "assistant",
+            content: res.final_answer ?? "Action completed with user authorization.",
+            timestamp: new Date().toISOString(),
+            traces: res.traces,
+          },
+        ]);
+      } else {
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: `ast_${Date.now()}`,
+            role: "assistant",
+            content: "Action was rejected by user.",
+            timestamp: new Date().toISOString(),
+          },
+        ]);
+      }
+    } catch (err: unknown) {
+      alert(`Decision error: ${err instanceof Error ? err.message : "Failed"}`);
     } finally {
       setIsLoading(false);
     }
@@ -311,10 +372,93 @@ export default function ChatPage() {
                     </div>
                     <div className="whitespace-pre-wrap">{m.content}</div>
 
-                    {/* Agent Traces */}
+                    {/* Agent Traces & Rich Output Cards */}
                     {m.traces && m.traces.length > 0 && (
-                      <div className="mt-2 pt-2 border-t border-white/10 text-[10px] text-slate-400 font-mono">
-                        ⚙ {m.traces.length} autonomous steps executed
+                      <div className="mt-3 space-y-2 border-t border-white/10 pt-2">
+                        <div className="text-[10px] text-slate-400 font-mono">
+                          ⚙ {m.traces.length} autonomous step{m.traces.length > 1 ? "s" : ""} executed
+                        </div>
+                        {m.traces.map((trace, idx) => {
+                          const resultData = trace.tool_result as Record<string, unknown> | null;
+                          const innerData = resultData?.data as Record<string, unknown> | null;
+                          const isWhatsApp = trace.tool_name === "send_whatsapp_message" || innerData?.whatsapp_app_url;
+                          
+                          if (isWhatsApp && innerData) {
+                            return (
+                              <div key={idx} className="p-3 rounded-xl bg-[#0b2b1d]/80 border border-emerald-500/40 text-xs shadow-md">
+                                <div className="flex items-center justify-between mb-2">
+                                  <div className="flex items-center gap-2 font-semibold text-emerald-400">
+                                    <span>📱</span>
+                                    <span>WhatsApp Dispatch Ready</span>
+                                  </div>
+                                  <span className="text-[10px] bg-emerald-950 px-2 py-0.5 rounded text-emerald-300 border border-emerald-500/30">
+                                    {String(innerData.recipient_name || "Contact")}
+                                  </span>
+                                </div>
+                                <div className="p-2 rounded bg-black/40 border border-emerald-500/20 text-emerald-100 text-[11px] mb-2.5">
+                                  "{String(innerData.message || "")}"
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                  <a
+                                    href={String(innerData.whatsapp_app_url)}
+                                    className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-[11px] font-semibold transition-all inline-flex items-center gap-1.5 shadow-md shadow-emerald-950/60"
+                                  >
+                                    <span>📱</span>
+                                    <span>Open in WhatsApp Phone App</span>
+                                  </a>
+                                  <a
+                                    href={String(innerData.whatsapp_universal_url)}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="px-3 py-1.5 bg-[#173a27] hover:bg-[#1f4a33] text-emerald-200 rounded-lg text-[11px] transition-all"
+                                  >
+                                    Web / Browser Link
+                                  </a>
+                                </div>
+                              </div>
+                            );
+                          }
+                          return null;
+                        })}
+                      </div>
+                    )}
+
+                    {/* Interactive Human-in-the-Loop Approval Card */}
+                    {m.pendingApproval && (
+                      <div className="mt-3 p-3.5 rounded-xl bg-purple-950/40 border border-purple-500/40 text-xs shadow-lg">
+                        <div className="flex items-center gap-1.5 font-semibold text-purple-300 mb-1.5">
+                          <span>🛡️</span>
+                          <span>Human-in-the-Loop Authorization Required</span>
+                        </div>
+                        <p className="text-[11px] text-slate-300 mb-2">
+                          Proposed Action: <code className="bg-purple-900/60 px-1.5 py-0.5 rounded text-purple-200 font-mono">{m.pendingApproval.tool_name}</code>
+                        </p>
+                        {(m.pendingApproval.args || (m.pendingApproval as unknown as { tool_args?: Record<string, unknown> }).tool_args) && (
+                          <pre className="p-2 rounded bg-black/50 text-[10px] text-purple-200 font-mono mb-3 overflow-x-auto border border-white/5">
+                            {JSON.stringify(m.pendingApproval.args || (m.pendingApproval as unknown as { tool_args?: Record<string, unknown> }).tool_args, null, 2)}
+                          </pre>
+                        )}
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() =>
+                              handleDecision(
+                                m.pendingApproval!.approval_id,
+                                true,
+                                m.pendingApproval!.tool_name,
+                                m.pendingApproval!.args || (m.pendingApproval as unknown as { tool_args?: Record<string, unknown> }).tool_args || {}
+                              )
+                            }
+                            className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-[11px] font-semibold transition-all shadow-md shadow-emerald-900/40"
+                          >
+                            ✓ Authorize & Execute
+                          </button>
+                          <button
+                            onClick={() => handleDecision(m.pendingApproval!.approval_id, false)}
+                            className="px-3 py-1.5 bg-rose-900/60 hover:bg-rose-800 text-rose-200 rounded-lg text-[11px] font-semibold transition-all"
+                          >
+                            ✕ Cancel
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>

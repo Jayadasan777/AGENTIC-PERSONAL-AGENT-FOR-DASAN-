@@ -8,6 +8,9 @@ from backend.app.agent.tools.documents import DocumentSearchTool
 from backend.app.agent.tools.memory import CreateNoteTool, MemorySearchTool
 from backend.app.agent.tools.sandbox import CodeExecutionTool
 from backend.app.agent.tools.system import SystemCommandTool
+from backend.app.agent.tools.travel import TravelBookingTool
+from backend.app.agent.tools.web_search import WebSearchTool
+from backend.app.agent.tools.whatsapp import WhatsAppTool
 
 
 class ToolRegistry:
@@ -42,6 +45,9 @@ def create_default_registry() -> ToolRegistry:
     registry.register(DocumentSearchTool())
     registry.register(SystemCommandTool())
     registry.register(CodeExecutionTool())
+    registry.register(WebSearchTool())
+    registry.register(TravelBookingTool())
+    registry.register(WhatsAppTool())
     return registry
 
 

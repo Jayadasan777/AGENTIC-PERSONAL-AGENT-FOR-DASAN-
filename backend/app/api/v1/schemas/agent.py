@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field
 class AgentRunRequest(BaseModel):
     """Payload to trigger an agent execution turn."""
 
-    prompt: str = Field(..., min_length=1, max_length=4000)
+    prompt: str = Field(default="", min_length=0, max_length=4000)
     skill_names: list[str] = Field(default_factory=list)
     approval_token: str | None = Field(
         default=None,
