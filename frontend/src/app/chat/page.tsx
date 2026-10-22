@@ -335,20 +335,20 @@ export default function ChatPage() {
           <div className="p-6 max-w-3xl mx-auto w-full">
             
             {/* Center Input Box - Zyricon exact design */}
-            <div className="rounded-2xl border border-purple-500/40 bg-[#151224] p-3 shadow-xl mb-6 relative">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSend();
+              }}
+              className="rounded-2xl border border-purple-500/40 bg-[#151224] p-3 shadow-xl mb-6 relative"
+            >
               <div className="flex items-center gap-2 px-2 pb-2">
-                <span className="text-purple-400 text-sm">✦</span>
+                <span className="text-purple-400 text-sm select-none">✦</span>
                 <input
                   type="text"
                   placeholder="Ask Anything..."
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      handleSend();
-                    }
-                  }}
                   className="bg-transparent text-xs text-white placeholder-slate-500 focus:outline-none w-full"
                 />
               </div>
@@ -357,6 +357,7 @@ export default function ChatPage() {
               <div className="flex items-center justify-between pt-2 border-t border-white/5 px-2 text-xs text-slate-400">
                 <div className="flex items-center gap-3">
                   <button
+                    type="button"
                     onClick={() => alert("Upload file to RAG context")}
                     className="hover:text-slate-200 flex items-center gap-1 transition-colors"
                   >
@@ -366,6 +367,7 @@ export default function ChatPage() {
                     <span>⚙</span> <span>Settings</span>
                   </Link>
                   <button
+                    type="button"
                     onClick={() => alert("Agent execution options")}
                     className="hover:text-slate-200 flex items-center gap-1 transition-colors"
                   >
@@ -375,13 +377,14 @@ export default function ChatPage() {
 
                 <div className="flex items-center gap-2">
                   <button
+                    type="button"
                     onClick={() => alert("Microphone voice input ready")}
                     className="p-1 text-slate-400 hover:text-white"
                   >
                     🎙️
                   </button>
                   <button
-                    onClick={() => handleSend()}
+                    type="submit"
                     disabled={!input.trim() || isLoading}
                     className="w-7 h-7 rounded-full bg-[#7c3aed] hover:bg-[#8b5cf6] text-white flex items-center justify-center text-xs font-bold transition-all shadow-md shadow-purple-900/50 disabled:opacity-40"
                   >
@@ -389,7 +392,7 @@ export default function ChatPage() {
                   </button>
                 </div>
               </div>
-            </div>
+            </form>
 
             {/* Bottom 3 Feature Cards (matching Zyricon bottom row) */}
             {messages.length === 0 && (
