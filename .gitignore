@@ -78,3 +78,7 @@ android/app/build/
 *.apk
 *.aab
 
+
+cloudflared.exe
+
+.neon

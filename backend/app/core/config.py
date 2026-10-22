@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     """
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=(".env", ".env.local"),
         env_file_encoding="utf-8",
         case_sensitive=True,
         extra="ignore",
@@ -85,10 +85,9 @@ class Settings(BaseSettings):
                 raw = "postgresql+asyncpg://" + raw[len("postgres://"):]
             elif raw.startswith("postgresql://") and not raw.startswith("postgresql+asyncpg://"):
                 raw = "postgresql+asyncpg://" + raw[len("postgresql://"):]
-            # Clean up sslmode for asyncpg
-            if "sslmode=require" in raw:
-                raw = raw.replace("sslmode=require", "ssl=require")
-            return raw
+            # Clean up query params: asyncpg accepts ssl=require and rejects channel_binding
+            base_url = raw.split("?")[0]
+            return f"{base_url}?ssl=require"
 
         password = self.POSTGRES_PASSWORD.get_secret_value()
         return (
